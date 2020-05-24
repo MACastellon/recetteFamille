@@ -23,7 +23,6 @@ router.route('/add').post(async (req,res) => {
 
 
     let recipe_id;
-    console.log(step);
 
     //Creating the new recipe object
     const newRecipe = new Recipe({
