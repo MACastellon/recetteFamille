@@ -18,9 +18,8 @@ router.route('/add').post(async (req,res) => {
     const description = req.body.description;
     const image = req.body.image;
     const user_id = req.body.user_id;
-    const ingredient = req.body.ingredient;
+    const ingredients = req.body.ingredients;
     const step = req.body.step;
-
 
     let recipe_id;
 
@@ -33,24 +32,22 @@ router.route('/add').post(async (req,res) => {
     });
 
     //Saving the new recipe in the database
-    await  newRecipe.save()
+   /* await  newRecipe.save()
         .then(() => {
             res.json('La recette à été ajouté !');
         })
-        .catch(err => res.json(err));
+        .catch(err => res.json(err));*/
 
     //save the recipe_id to add the ingredient and step
     recipe_id = newRecipe._id;
 
     //Add Ingredient in the database
-    for (let i = 0; ingredient.length > i; i++) {
+    for (let i = 0; ingredients.length > i; i++) {
         const newIngredient = new Ingredient({
-            quantity: ingredient[i].quantity,
-            mesure : ingredient[i].mesure,
-            name: ingredient[i].name,
+            name: ingredients[i].name,
             recipe_id : recipe_id
         })
-        newIngredient.save();
+        /*newIngredient.save();*/
     }
 
     //Add step in the database
@@ -60,7 +57,7 @@ router.route('/add').post(async (req,res) => {
             description: step[i].description,
             recipe_id : recipe_id
         })
-        newStep.save();
+      /*  newStep.save();*/
     }
 
 })

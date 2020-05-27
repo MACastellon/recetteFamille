@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const StepSchema = new Schema({
-    description: {
+    step: {
         type: String,
         required: true,
     },
