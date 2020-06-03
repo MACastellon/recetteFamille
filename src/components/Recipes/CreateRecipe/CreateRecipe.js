@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState,useEffect} from 'react';
 import {Container} from "react-bootstrap";
 import { Button } from 'react-bootstrap';
 import axios from 'axios';
@@ -7,32 +7,25 @@ const CreateRecipe = () => {
 
     const [title, setTitle] = useState("")
     const [description, setDescription] = useState("")
-    const [ingredients, setIngredients] = useState([[{name: ""}]])
-    const [steps, setSteps] = useState([[{description: ""}]])
+    const [ingredients, setIngredients] = useState([{name: ""}])
+    const [steps, setSteps] = useState([{step: ""}])
 
-    const addIngredient  = () => {
-      setIngredients([...ingredients, [{name : ""}]])
-        console.log(ingredients)
+    useEffect(() =>{
+
+    } ,[ingredients, steps])
+
+    const addItem  = (list,setList,field) => {
+      setList([...list, {[field] : ""}])
     }
 
-    const onChangeHandler = (e, index) => {
+    const onChangeHandler = (e, index,list,setList,field) => {
         e.persist();
-        let items = [...ingredients];
-        let item = items[index];
-        console.log(item);
-        setIngredients([...ingredients], item[0].name = e.target.value)
-
-        console.log(e.target.value)
+        if(field === "name") setList([...list], list[index].name = e.target.value)
+        else setList([...list], list[index].step = e.target.value)
 
     }
-    const removeIngredient = (index) => {
-        setIngredients(ingredients.filter((ingredient, i) => {return i !== index} ));
-        /*return setIngredients(oldList => {
-            return oldList.filter((ingredient, i) => {
-                console.log(i)
-                return i !== index;
-            });
-        });*/
+    const removeItem = (index,list,setList) => {
+       setList(list.filter((item, i) => { return i !== index} ));
     };
 
 
@@ -69,13 +62,13 @@ const CreateRecipe = () => {
                         {ingredients.map( (ingredient, index) => {
                             return (
                                 <div key={index} >
-                                    <input  type="text" placeholder={"ingrédient"}  id={index} onChange={(e) => {onChangeHandler(e, index)}}/>
-                                    {index != 0 ? (<input type="button" value={"x"} onClick={() => removeIngredient(index)}/>) : (null)}
+                                    <input  type="text" placeholder={"ingrédient"} value={ingredient.name}  id={index} onChange={(e) => {onChangeHandler(e, index,ingredients,setIngredients,"name")}}/>
+                                    {index != 0 ? (<input type="button" value={"x"} onClick={() => removeItem(index,ingredients,setIngredients)}/>) : (null)}
                                 </div>
                             )
                         })}
                         <div>
-                            <input type="button" value={"Ajouter ingredient"} onClick={addIngredient}/>
+                            <input type="button" value={"Ajouter ingredient"} onClick={() => addItem(ingredients,setIngredients,"name")}/>
                         </div>
                     </div>
                 </div>
@@ -85,13 +78,13 @@ const CreateRecipe = () => {
                         {steps.map( (step, index) => {
                             return (
                                 <div key={index} >
-                                    <input  type="text" placeholder={"Étapes"}  id={index} onChange={(e) => {onChangeHandler(e, index)}}/>
-                                    {index != 0 ? (<input type="button" value={"x"} onClick={() => removeIngredient(index)}/>) : (null)}
+                                    {index + 1} <input  type="text" placeholder={"Étapes"}  id={index} onChange={(e) => {onChangeHandler(e, index,steps,setSteps,"step")}}/>
+                                    {index != 0 ? (<input type="button" value={"x"} onClick={() => removeItem(index,steps,setSteps)}/>) : (null)}
                                 </div>
                             )
                         })}
                         <div>
-                            <input type="button" value={"Ajouter ingredient"} onClick={addIngredient}/>
+                            <input type="button" value={"Ajouter étape"} onClick={() => addItem(steps,setSteps,"step")}/>
                         </div>
                     </div>
                 </div>

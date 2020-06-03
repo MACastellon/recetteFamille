@@ -8,6 +8,7 @@ import CreateRecipe from "./Recipes/CreateRecipe/CreateRecipe";
 import {Container} from "react-bootstrap";
 
 const App = () => {
+
   return (
     <>
 
@@ -15,7 +16,6 @@ const App = () => {
             <Header/>
             <Switch>
                 <Route path={'/accueil'} component={Home}/>
-                <Route path={'/recettes/ajouter'} component={CreateRecipe}/>
                 <Route path={'/recettes/ajouter'} component={CreateRecipe}/>
                 <Route path={'/recettes'} component={Recipes}/>
                 <Redirect to="/accueil"/>
