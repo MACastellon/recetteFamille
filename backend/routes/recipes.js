@@ -20,9 +20,35 @@ router.route('/add').post(async (req,res) => {
     const user_id = req.body.user_id;
     const ingredients = req.body.ingredients;
     const steps = req.body.steps;
-    console.log(ingredients)
-    console.log(steps)
     let recipe_id;
+
+    // errors arrays
+    let err = [];
+    let emptyIngredient = []
+    let emptyStep = []
+
+    //Verification before saving
+    if (title === "") err.push({message : "Ajouter un titre"})
+    if (description === "") err.push({message : "Ajouter une description"})
+
+    for (let i = 0; i < ingredients.length; i ++) {
+        if (ingredients[i].name === "") emptyIngredient.push({field : i})
+    }
+
+    if (emptyIngredient.length != 0) err.push({message : "vous avez " + emptyIngredient.length+ "champs d'ingrédients vide"})
+
+    for (let i = 0; i < steps.length; i ++) {
+        if (steps[i].step === "") emptyStep.push({field : i})
+    }
+
+    if (emptyStep.length != 0) err.push({message : "vous avez " + emptyStep.length + " champs d'étapes vide"})
+
+
+    if (err.length > 0) res.json({err : err});
+
+    //Verification done time to save the recipe
+
+
 
     //Creating the new recipe object
     const newRecipe = new Recipe({
@@ -33,7 +59,7 @@ router.route('/add').post(async (req,res) => {
     });
 
     //Saving the new recipe in the database
-    await  newRecipe.save()
+   // await  newRecipe.save()
 
     //save the recipe_id to add the ingredient and step
     recipe_id = newRecipe._id;
@@ -44,7 +70,7 @@ router.route('/add').post(async (req,res) => {
             name: ingredients[i].name,
             recipe_id : recipe_id
         })
-        newIngredient.save();
+       // newIngredient.save();
     }
 
     //Add step in the database
@@ -54,9 +80,10 @@ router.route('/add').post(async (req,res) => {
             step: steps[i].step,
             recipe_id : recipe_id
         })
-        newStep.save();
+       // newStep.save();
     }
 
+    res.json({message: "success"})
 })
 
 module.exports = router;
