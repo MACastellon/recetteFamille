@@ -61,11 +61,17 @@ router.route('/register').post(async (req,res) => {
 router.route("/login").post(async (req,res) => {
     const username = req.body.username;
     const password =   req.body.password;
+    let err = []
+    if (username === "") err.push({message : "Le champs nom d'utilsateur est vide"})
+    if (password === "") err.push({message : "Le champs de mot de passe est vide"})
+
+    if (err.length != 0) res.json(err);
+    else
 
     await User.findOne({username : username})
         .then( async (user) => {
 
-            if (!user) res.json("Ce compte n'est pas inscrit")
+            if (!user) res.json({message : "Ce compte n'est pas inscrit"})
 
             //Compare password
             const isMatch = await  bcrypt.compare(password, user.password)
@@ -82,7 +88,7 @@ router.route("/login").post(async (req,res) => {
                 const accessToken = await jwt.sign(userData,process.env.ACCESS_TOKEN_SECRET);
                 res.json({token : accessToken});
             } else {
-                res.json("Le mot de passe est incorrect");
+                res.json({message :"Le mot de passe est incorrect"});
             }
         })
 })

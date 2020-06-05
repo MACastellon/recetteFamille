@@ -1,10 +1,8 @@
-import React, {useState} from "react";
-import axios from 'axios';
-
-
+import React, {useContext, useState} from "react";
+import AuthContext from "../../contexts/AuthContext";
 
 const Login = () => {
-
+    const {loginFn, logoutFn, currentUser} = useContext(AuthContext);
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
 
@@ -15,9 +13,9 @@ const Login = () => {
             username : username,
             password : password
         }
+        loginFn(data)
         console.log(data);
-        axios.post("http://localhost:5000/users/login", data)
-            .then((res) => console.log(res.data))
+
     }
     return (
         <>
@@ -29,7 +27,9 @@ const Login = () => {
                     <input type="password" placeholder={"Mot de passe"} onChange={(e) => {e.preventDefault(); setPassword(e.target.value)}}/>
                 </div>
                 <input type="submit" value={"Se Connecter"}/>
+                {currentUser != null ? ("Bonjour " + currentUser.username + " ton id est " + currentUser._id) : ("Pas connecter")}
             </form>
+            <button onClick={() => {logoutFn()} }>Logout</button>
         </>
     )
 }

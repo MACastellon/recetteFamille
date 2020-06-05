@@ -7,10 +7,6 @@ const StepSchema = new Schema({
         type: String,
         required: true,
     },
-    recipe_id : {
-        type: String,
-        required: true,
-    }
 });
 
 const Step = mongoose.model('Step', StepSchema);

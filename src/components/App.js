@@ -7,22 +7,46 @@ import Recipes from "./Recipes/Recipes";
 import CreateRecipe from "./Recipes/CreateRecipe/CreateRecipe";
 import Login from "./Login/Login";
 import {Container} from "react-bootstrap";
+import {AuthProvider,AuthConsumer} from "../contexts/AuthContext";
 
 const App = () => {
 
+    const showRoute = (context) => {
+        return context.currentUser? (
+            <>
+                <Container>
+                    <Header/>
+                    <Switch>
+                        <Route path={'/accueil'} component={Home}/>
+                        <Route path={'/connexion'} component={Login}/>
+                        <Route path={'/recettes/ajouter'} component={CreateRecipe}/>
+                        <Route path={'/recettes'} component={Recipes}/>
+                        <Redirect to="/accueil"/>
+                    </Switch>
+                </Container>
+            </>
+
+        ) : (
+            <Container>
+                <Header/>
+                <Switch>
+                    <Route path={'/accueil'} component={Home}/>
+                    <Route path={'/connexion'} component={Login}/>
+                    <Route path={'/recettes/ajouter'} component={CreateRecipe}/>
+                    <Route path={'/recettes'} component={Recipes}/>
+                    <Redirect to="/accueil"/>
+                </Switch>
+            </Container>
+        )
+    }
   return (
     <>
+        <AuthProvider>
+                <AuthConsumer>
+                    {showRoute}
+                </AuthConsumer>
+        </AuthProvider>
 
-        <Container>
-            <Header/>
-            <Switch>
-                <Route path={'/accueil'} component={Home}/>
-                <Route path={'/connexion'} component={Login}/>
-                <Route path={'/recettes/ajouter'} component={CreateRecipe}/>
-                <Route path={'/recettes'} component={Recipes}/>
-                <Redirect to="/accueil"/>
-            </Switch>
-        </Container>
     </>
   );
 }

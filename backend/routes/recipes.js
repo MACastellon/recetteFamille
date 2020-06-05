@@ -5,7 +5,10 @@ let Ingredient = require('../models/ingredient.model');
 let Step = require('../models/step.model');
 
 router.route('/').get((req,res) => {
+    let recipes = []
     Recipe.find()
+        .populate("ingredients steps")
+        .exec()
         .then(recipes => res.json(recipes))
         .catch(err => res.status(400).json('Error : ' + err))
 
@@ -20,7 +23,8 @@ router.route('/add').post(async (req,res) => {
     const user_id = req.body.user_id;
     const ingredients = req.body.ingredients;
     const steps = req.body.steps;
-    let recipe_id;
+    let ingredientsId = [];
+    let stepsId = [];
 
     // errors arrays
     let err = [];
@@ -35,7 +39,7 @@ router.route('/add').post(async (req,res) => {
         if (ingredients[i].name === "") emptyIngredient.push({field : i})
     }
 
-    if (emptyIngredient.length != 0) err.push({message : "vous avez " + emptyIngredient.length+ "champs d'ingrédients vide"})
+    if (emptyIngredient.length != 0) err.push({message : "vous avez " + emptyIngredient.length+ " champs d'ingrédients vide"})
 
     for (let i = 0; i < steps.length; i ++) {
         if (steps[i].step === "") emptyStep.push({field : i})
@@ -46,42 +50,36 @@ router.route('/add').post(async (req,res) => {
 
     if (err.length > 0) res.json({err : err});
 
-    //Verification done time to save the recipe
+    //Verification done time to make and save the recipe
 
+    for (let i = 0; ingredients.length > i; i++) {
+        const newIngredient = new Ingredient({
+            name: ingredients[i].name,
+        })
+        await newIngredient.save();
+        ingredientsId.push(newIngredient._id)
+    }
 
+   for (let i = 0; steps.length > i; i++) {
+        const newStep = new Step({
+            step: steps[i].step,
+        })
+        await newStep.save();
+        stepsId.push(newStep._id)
+    }
 
     //Creating the new recipe object
     const newRecipe = new Recipe({
         title,
         description,
         image,
+        ingredients : ingredientsId,
+        steps: stepsId ,
         user_id
     });
 
     //Saving the new recipe in the database
-   // await  newRecipe.save()
-
-    //save the recipe_id to add the ingredient and step
-    recipe_id = newRecipe._id;
-
-    //Add Ingredient in the database
-    for (let i = 0; ingredients.length > i; i++) {
-        const newIngredient = new Ingredient({
-            name: ingredients[i].name,
-            recipe_id : recipe_id
-        })
-       // newIngredient.save();
-    }
-
-    //Add step in the database
-    for (let i = 0; steps.length > i; i++) {
-        console.log(steps[i].step);
-        const newStep = new Step({
-            step: steps[i].step,
-            recipe_id : recipe_id
-        })
-       // newStep.save();
-    }
+    await  newRecipe.save()
 
     res.json({message: "success"})
 })

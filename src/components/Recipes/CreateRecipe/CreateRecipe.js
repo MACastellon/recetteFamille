@@ -1,18 +1,22 @@
-import React, {useState,useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {Container} from "react-bootstrap";
 import { Button } from 'react-bootstrap';
 import axios from 'axios';
+import AuthContext from "../../../contexts/AuthContext";
 
 const CreateRecipe = () => {
+    const {currentUser} = useContext(AuthContext)
 
     const [title, setTitle] = useState("")
     const [description, setDescription] = useState("")
     const [ingredients, setIngredients] = useState([{name: ""}])
     const [steps, setSteps] = useState([{step: ""}])
+    const [userId, setUserId] = useState("")
+
 
     useEffect(() =>{
-
-    } ,[ingredients, steps])
+        if (currentUser != null) setUserId(currentUser._id)
+    } ,[ingredients, steps, currentUser])
 
     const addItem  = (list,setList,field) => {
       setList([...list, {[field] : ""}])
@@ -35,7 +39,8 @@ const CreateRecipe = () => {
             title : title,
             description : description,
             ingredients : ingredients,
-            steps : steps
+            steps : steps,
+            user_id : userId
         }
 
         console.log(data)
@@ -88,7 +93,6 @@ const CreateRecipe = () => {
                         </div>
                     </div>
                 </div>
-
                 <input type="submit" value={"Completer"}/>
             </form>
         </>

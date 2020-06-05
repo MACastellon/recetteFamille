@@ -9,7 +9,7 @@ const IngredientSchema = new Schema({
     },
     recipe_id : {
         type: String,
-        required: true,
+        required: false,
     }
 });
 
