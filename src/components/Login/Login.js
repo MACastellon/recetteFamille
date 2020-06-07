@@ -1,21 +1,20 @@
 import React, {useContext, useState} from "react";
 import AuthContext from "../../contexts/AuthContext";
 
-const Login = () => {
+const Login = (props) => {
     const {loginFn, logoutFn, currentUser} = useContext(AuthContext);
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
 
 
-    const submit = (e) => {
+    const submit = async (e) => {
         e.preventDefault();
         const data = {
             username : username,
             password : password
         }
-        loginFn(data)
-        console.log(data);
-
+        await  loginFn(data)
+        if(currentUser) props.history.push("/");
     }
     return (
         <>

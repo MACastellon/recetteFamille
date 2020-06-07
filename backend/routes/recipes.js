@@ -5,8 +5,16 @@ let Ingredient = require('../models/ingredient.model');
 let Step = require('../models/step.model');
 
 router.route('/').get((req,res) => {
-    let recipes = []
     Recipe.find()
+        .populate("ingredients steps")
+        .exec()
+        .then(recipes => res.json(recipes))
+        .catch(err => res.status(400).json('Error : ' + err))
+
+})
+router.route('/:id').get((req,res) => {
+    const id = req.body._id
+    Recipe.findOne({_id : id })
         .populate("ingredients steps")
         .exec()
         .then(recipes => res.json(recipes))
@@ -48,7 +56,7 @@ router.route('/add').post(async (req,res) => {
     if (emptyStep.length != 0) err.push({message : "vous avez " + emptyStep.length + " champs d'étapes vide"})
 
 
-    if (err.length > 0) res.json({err : err});
+    if (err.length > 0) res.json({err : err, success: false});
 
     //Verification done time to make and save the recipe
 
@@ -81,7 +89,28 @@ router.route('/add').post(async (req,res) => {
     //Saving the new recipe in the database
     await  newRecipe.save()
 
-    res.json({message: "success"})
+   await res.json({message: "La recette à été ajouter", success: true})
+})
+
+router.route('/:id').put((req,res) => {
+    const id = req.body._id
+    Recipe.findOne({_id : id })
+        .populate("ingredients steps")
+        .exec()
+        .then(recipes => res.json(recipes))
+        .catch(err => res.status(400).json('Error : ' + err))
+
+})
+router.route('/:id/delete').delete((req,res) => {
+    const id = req.params.id
+    Recipe.findOne({_id : id })
+        .exec()
+        .then(recipes => {
+            recipes.remove();
+            res.json({message : "Recette supprimer!"})
+        })
+        .catch(err => res.status(400).json('Error : ' + err))
+
 })
 
 module.exports = router;

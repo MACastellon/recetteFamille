@@ -4,7 +4,7 @@ import { Button } from 'react-bootstrap';
 import axios from 'axios';
 import AuthContext from "../../../contexts/AuthContext";
 
-const CreateRecipe = () => {
+const CreateRecipe = (props) => {
     const {currentUser} = useContext(AuthContext)
 
     const [title, setTitle] = useState("")
@@ -13,6 +13,8 @@ const CreateRecipe = () => {
     const [steps, setSteps] = useState([{step: ""}])
     const [userId, setUserId] = useState("")
 
+    const [err, setErr] = useState([])
+    const [success, setSuccess] = useState([])
 
     useEffect(() =>{
         if (currentUser != null) setUserId(currentUser._id)
@@ -32,9 +34,9 @@ const CreateRecipe = () => {
        setList(list.filter((item, i) => { return i !== index} ));
     };
 
-
     const submit = (e) => {
         e.preventDefault();
+        setErr([])
         const data = {
             title : title,
             description : description,
@@ -43,15 +45,40 @@ const CreateRecipe = () => {
             user_id : userId
         }
 
-        console.log(data)
+
         axios.post("http://localhost:5000/recipes/add", data)
-            .then(res => console.log(res.data));
+            .then(res => {
+                if (res.data.err) setErr(res.data.err);
+                if(res.data.success) props.history.push("/recettes");
+            });
     }
 
 
     return (
         <>
             <h1>Créer une recette</h1>
+            <div>
+                {err.length !== 0 ?(
+                    <>
+                        <h4>Vous avez les erreurs suivante</h4>
+                        <ul>
+                            {err.map((err,index) => {
+                                return <li key={index}>{err.message}</li>
+                            })}
+                        </ul>
+                    </>
+                ) : (
+                    null
+                ) }
+                {success.length !== 0 ?(
+                    <>
+                        <h4>{success.message}</h4>
+                    </>
+                ) : (
+                    null
+                ) }
+
+            </div>
             <form action="POST" onSubmit={(e) => submit(e)}>
                 <div>
                     <h2>Titre de la recette</h2>

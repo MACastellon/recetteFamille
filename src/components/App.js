@@ -18,7 +18,6 @@ const App = () => {
                     <Header/>
                     <Switch>
                         <Route path={'/accueil'} component={Home}/>
-                        <Route path={'/connexion'} component={Login}/>
                         <Route path={'/recettes/ajouter'} component={CreateRecipe}/>
                         <Route path={'/recettes'} component={Recipes}/>
                         <Redirect to="/accueil"/>
@@ -32,7 +31,6 @@ const App = () => {
                 <Switch>
                     <Route path={'/accueil'} component={Home}/>
                     <Route path={'/connexion'} component={Login}/>
-                    <Route path={'/recettes/ajouter'} component={CreateRecipe}/>
                     <Route path={'/recettes'} component={Recipes}/>
                     <Redirect to="/accueil"/>
                 </Switch>
