@@ -3,6 +3,7 @@ import axios from 'axios';
 
 const Recipes = () => {
     const [recipes, setRecipes] = useState(null)
+
     useEffect(() => {
         axios.get("http://localhost:5000/recipes")
             .then((res) => {
@@ -15,9 +16,9 @@ const Recipes = () => {
             <h1>Recettes Route</h1>
             {recipes != null ? (
                 <ul>
-                    {recipes.map((recipe, index) => {
+                    {recipes.map((recipe, i) => {
                         return (
-                            <li key={index}>
+                            <li key={i}>
                                 <h3>{recipe.title}</h3>
                                 <p> {recipe.description}</p>
                                 <h4>Ingrédients</h4>
@@ -29,7 +30,7 @@ const Recipes = () => {
                                 <h4>Étapes</h4>
                                 <ul>
                                     {recipe.steps.map ((step,i)  => {
-                                        return <li>{i+1} {step.step}</li>
+                                        return <li key={i}>{i+1} {step.step}</li>
                                     } )}
                                 </ul>
                             </li>

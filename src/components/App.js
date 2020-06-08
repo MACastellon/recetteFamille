@@ -8,6 +8,7 @@ import CreateRecipe from "./Recipes/CreateRecipe/CreateRecipe";
 import Login from "./Login/Login";
 import {Container} from "react-bootstrap";
 import {AuthProvider,AuthConsumer} from "../contexts/AuthContext";
+import ModifyRecipe from "./Recipes/ModifyRecipe/ModifyRecipe";
 
 const App = () => {
 
@@ -19,6 +20,7 @@ const App = () => {
                     <Switch>
                         <Route path={'/accueil'} component={Home}/>
                         <Route path={'/recettes/ajouter'} component={CreateRecipe}/>
+                        <Route path={'/recettes/modifier/:id'} component={ModifyRecipe}/>
                         <Route path={'/recettes'} component={Recipes}/>
                         <Redirect to="/accueil"/>
                     </Switch>

@@ -92,21 +92,38 @@ router.route('/add').post(async (req,res) => {
    await res.json({message: "La recette à été ajouter", success: true})
 })
 
-router.route('/:id').put((req,res) => {
-    const id = req.body._id
-    Recipe.findOne({_id : id })
-        .populate("ingredients steps")
-        .exec()
-        .then(recipes => res.json(recipes))
-        .catch(err => res.status(400).json('Error : ' + err))
+router.route('/modify/:id').patch((req, res) => {
+    const id = req.params.id;
+    const field = req.body.field;
+    const value = req.body.value;
+
+    if (value === "") res.json({message: "Vous ne pouvez pas"});
+
+    Recipe.updateOne({_id: id}, {$set: {[field]: value}})
+        .catch(err => console.log(err))
+    res.json("Le " + field + " à été changé avec succès" );
+
 
 })
-router.route('/:id/delete').delete((req,res) => {
-    const id = req.params.id
+ router.route('/delete/:id').delete((req,res) => {
+    const id = req.params.id;
+     let ingredients = [];
+     let steps = [];
+
     Recipe.findOne({_id : id })
         .exec()
-        .then(recipes => {
-            recipes.remove();
+        .then(recipe => {
+            ingredients = [...recipe.ingredients];
+            steps = [...recipe.ingredients];
+
+            for (let i = 0; i < ingredients.length; i++) {
+                Ingredient.deleteOne({_id : ingredients[i]})
+            }
+
+            for (let i = 0; i < steps.length; i++) {
+                Step.deleteOne({_id : steps[i]})
+            }
+            recipe.remove();
             res.json({message : "Recette supprimer!"})
         })
         .catch(err => res.status(400).json('Error : ' + err))
