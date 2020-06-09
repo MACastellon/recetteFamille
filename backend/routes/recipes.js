@@ -13,7 +13,7 @@ router.route('/').get((req,res) => {
 
 })
 router.route('/:id').get((req,res) => {
-    const id = req.body._id
+    const id = req.params.id
     Recipe.findOne({_id : id })
         .populate("ingredients steps")
         .exec()

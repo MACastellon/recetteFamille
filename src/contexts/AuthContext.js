@@ -15,6 +15,7 @@ const AuthProvider = props => {
 
     useEffect(() => {
         const user = extractUser();
+        console.log(user)
         if (user) {
             setToken(localStorage.getItem(TOKEN_NAME));
             setCurrentUser(user);
@@ -26,6 +27,7 @@ const AuthProvider = props => {
         axios.post(AUTH_URL , data)
             .then((res) => {
                 console.log(res.data)
+                if (res.data.message) return;
                 saveToken(res.data.token);
                 const user = extractUser();
                 if (user) {

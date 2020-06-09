@@ -13,15 +13,15 @@ import ModifyRecipe from "./Recipes/ModifyRecipe/ModifyRecipe";
 const App = () => {
 
     const showRoute = (context) => {
-        return context.currentUser? (
+        return context.currentUser != null? (
             <>
                 <Container>
                     <Header/>
                     <Switch>
-                        <Route path={'/accueil'} component={Home}/>
-                        <Route path={'/recettes/ajouter'} component={CreateRecipe}/>
                         <Route path={'/recettes/modifier/:id'} component={ModifyRecipe}/>
+                        <Route path={'/recettes/ajouter'} component={CreateRecipe}/>
                         <Route path={'/recettes'} component={Recipes}/>
+                        <Route path={'/accueil'} component={Home}/>
                         <Redirect to="/accueil"/>
                     </Switch>
                 </Container>
