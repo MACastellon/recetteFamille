@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt');
 const  jwt = require("jsonwebtoken");
 
 let User = require('../models/user.model');
+let Recipe = require('../models/recipe.model');
 
 router.route("/").get((req,res) => {
     User.find()
@@ -10,7 +11,20 @@ router.route("/").get((req,res) => {
         .catch(err => res.status(400).json('Error : ' + err))
 })
 
+router.route("/:id/recipes").get((req,res) =>  {
+    const userId = req.params.id
 
+    if(!userId) res.json("Bad Request")
+    Recipe.find({user_id : userId})
+        .then(recipes =>  {
+            res.json(recipes);
+        })
+        .catch(err => {
+            res.json(err)
+        })
+
+
+})
 router.route('/register').post(async (req,res) => {
     try {
 

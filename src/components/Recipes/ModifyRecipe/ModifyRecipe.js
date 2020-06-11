@@ -18,10 +18,10 @@ const ModifyRecipe = (props) => {
     },[recipeId])
     return (
         <>
-            <h1>Modification de la recette</h1>
+
             {recipe !== null ? (
                 <>
-                    {recipe.user_id != currentUser._id ? props.history.push("/") : null }
+                    <h1>Modification de recette</h1>
                     <h2>{recipe.title}</h2>
                     <h3>Ingrédients</h3>
                     <ul>

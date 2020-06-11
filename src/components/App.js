@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React from 'react';
 import './App.css';
 import Header from "./Header/Header";
 import Home from "./Home/Home"
@@ -9,16 +9,10 @@ import Login from "./Login/Login";
 import {Container} from "react-bootstrap";
 import {AuthProvider,AuthConsumer} from "../contexts/AuthContext";
 import ModifyRecipe from "./Recipes/ModifyRecipe/ModifyRecipe";
-
+import Dashboard from "./Dashboard/Dashboard";
 const App = () => {
 
-    const PrivateRoute = ({ component: Component, ...rest }, context) => (
-        <Route {...rest} render={(props) => (
-            context.currentUser === true
-                ? <Component {...props} />
-                : <Redirect to='/connexion' />
-        )} />
-    )
+
     const showRoute = (context) => {
         return !context.loading ?(
             <>
@@ -30,6 +24,7 @@ const App = () => {
                             <Route path={'/recettes/modifier/:id'} component={ModifyRecipe}/>
                             <Route path={'/recettes/ajouter'} component={CreateRecipe}/>
                             <Route path={'/recettes'} component={Recipes}/>
+                            <Route path={'/tableau-de-bord'} component={Dashboard}/>
                             <Route path={'/accueil'} component={Home}/>
                             <Redirect to="/accueil"/>
                         </Switch>
