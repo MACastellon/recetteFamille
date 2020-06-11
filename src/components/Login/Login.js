@@ -14,7 +14,6 @@ const Login = (props) => {
             password : password
         }
         await  loginFn(data)
-        if(currentUser) props.history.push("/");
     }
     return (
         <>
@@ -28,7 +27,7 @@ const Login = (props) => {
                 <input type="submit" value={"Se Connecter"}/>
                 {currentUser != null ? ("Bonjour " + currentUser.username + " ton id est " + currentUser._id) : ("Pas connecter")}
             </form>
-            <button onClick={() => {logoutFn()} }>Logout</button>
+
         </>
     )
 }

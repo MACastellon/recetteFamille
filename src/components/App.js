@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Component} from 'react';
 import './App.css';
 import Header from "./Header/Header";
 import Home from "./Home/Home"
@@ -12,31 +12,44 @@ import ModifyRecipe from "./Recipes/ModifyRecipe/ModifyRecipe";
 
 const App = () => {
 
+    const PrivateRoute = ({ component: Component, ...rest }, context) => (
+        <Route {...rest} render={(props) => (
+            context.currentUser === true
+                ? <Component {...props} />
+                : <Redirect to='/connexion' />
+        )} />
+    )
     const showRoute = (context) => {
-        return context.currentUser != null? (
+        return !context.loading ?(
             <>
-                <Container>
-                    <Header/>
-                    <Switch>
-                        <Route path={'/recettes/modifier/:id'} component={ModifyRecipe}/>
-                        <Route path={'/recettes/ajouter'} component={CreateRecipe}/>
-                        <Route path={'/recettes'} component={Recipes}/>
-                        <Route path={'/accueil'} component={Home}/>
-                        <Redirect to="/accueil"/>
-                    </Switch>
-                </Container>
-            </>
+                {context.currentUser != null ? (
+                    <Container>
+                        {console.log("connecter")}
+                        <Header/>
+                        <Switch>
+                            <Route path={'/recettes/modifier/:id'} component={ModifyRecipe}/>
+                            <Route path={'/recettes/ajouter'} component={CreateRecipe}/>
+                            <Route path={'/recettes'} component={Recipes}/>
+                            <Route path={'/accueil'} component={Home}/>
+                            <Redirect to="/accueil"/>
+                        </Switch>
+                    </Container>
+                ) : (
+                    <Container>
+                        {console.log("pas Co")}
+                        <Header/>
+                        <Switch>
+                            <Route path={'/recettes'} component={Recipes}/>
+                            <Route path={'/connexion'} component={Login}/>
+                            <Route path={'/accueil'} component={Home}/>
+                            <Redirect to="/accueil"/>
+                        </Switch>
+                    </Container>
+                )}
 
+            </>
         ) : (
-            <Container>
-                <Header/>
-                <Switch>
-                    <Route path={'/accueil'} component={Home}/>
-                    <Route path={'/connexion'} component={Login}/>
-                    <Route path={'/recettes'} component={Recipes}/>
-                    <Redirect to="/accueil"/>
-                </Switch>
-            </Container>
+            null
         )
     }
   return (

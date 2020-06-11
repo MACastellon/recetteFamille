@@ -11,15 +11,19 @@ const AuthProvider = props => {
 
     const [currentUser, setCurrentUser] = useState(null);
     const [token, setToken] = useState('');
+    const [loading, setLoading] = useState(true);
     const history = useHistory();
 
     useEffect(() => {
+        if (!localStorage.getItem(TOKEN_NAME)) setLoading(false)
         const user = extractUser();
         console.log(user)
         if (user) {
             setToken(localStorage.getItem(TOKEN_NAME));
             setCurrentUser(user);
         }
+        setLoading(false)
+
     }, [])
 
 
@@ -27,13 +31,14 @@ const AuthProvider = props => {
         axios.post(AUTH_URL , data)
             .then((res) => {
                 console.log(res.data)
-                if (res.data.message) return;
+                if (res.data.message || res.data.length > 0 ) return null;
                 saveToken(res.data.token);
                 const user = extractUser();
                 if (user) {
                     setToken(data.token);
                     setCurrentUser({...user});
                 }
+                history.replace("/")
             })
     };
 
@@ -57,7 +62,9 @@ const AuthProvider = props => {
         history.replace('/');
     };
 
-    const value = {loginFn: login, currentUser, logoutFn: logout, token};
+
+
+    const value = {loginFn: login, currentUser, logoutFn: logout, token, loading};
 
     return (
         <AuthContext.Provider value={value}>

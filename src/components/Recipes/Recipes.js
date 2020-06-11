@@ -3,7 +3,6 @@ import axios from 'axios';
 
 const Recipes = () => {
     const [recipes, setRecipes] = useState(null)
-
     useEffect(() => {
         axios.get("http://localhost:5000/recipes")
             .then((res) => {
