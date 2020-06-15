@@ -20,11 +20,9 @@ connection.once('open', () => {
 })
 
 const recipeRouter = require('./routes/recipes');
-const ingredientRouter = require('./routes/ingredients');
 const userRouter = require('./routes/users');
 
 app.use('/recipes', recipeRouter);
-app.use('/ingredients', ingredientRouter);
 app.use('/users', userRouter);
 
 

@@ -19,7 +19,14 @@ const Dashboard = () => {
             })
     },[])
 
-
+    const deleteHandler = (e, id, index) => {
+        e.preventDefault();
+        axios.delete("http://localhost:5000/recipes/delete/"+ id)
+            .then((res) => {
+                console.log(res.data)
+                setUserRecipes(userRecipes.filter((item, i) => { return i !== index} ));
+            })
+    }
     return (
         <div>
             <h2>Tableau de bord</h2>
@@ -27,7 +34,7 @@ const Dashboard = () => {
             <h3>Vos recettes</h3>
             {userRecipes != null ? (
                 userRecipes.map((recipe, i) => {
-                        return <li key={i}>{recipe.title} <Link to={"/recettes/modifier/" + recipe._id}>modifier</Link></li>
+                        return <li key={i}>{recipe.title} <Link to={"/recettes/modifier/" + recipe._id}>modifier</Link> / <button onClick={(e) => deleteHandler(e,recipe._id,i) }>supprimer</button></li>
                     })
             ) : (null)}
 

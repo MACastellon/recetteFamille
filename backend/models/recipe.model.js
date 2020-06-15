@@ -20,8 +20,8 @@ const RecipeSchema = new Schema({
         type: String,
         required: false
     },
-    ingredients: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Ingredient',required : true }],
-    steps: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Step',required : true }],
+    ingredients: [],
+    steps: [],
 
     user_id: { type:String , require: true}
 });
