@@ -32,16 +32,17 @@ router.route('/register').post(async (req,res) => {
         const password =   req.body.password;
         const password2 = req.body.password2;
         const role = req.body.role;
+        console.log(username)
 
         let errors = [];
 
         //Verification before the registration
         if (!username || !password || !password2 || !role) {
-            res.json({msg : 'Tout les champs doivent être remplient'})
+            res.json({message : "Tout les champs doivent être remplis", success: false})
         }
 
         if (password != password2) {
-            res.json({msg : 'Les mots de passe doivent être identiques'});
+            res.json({message : "les mots de passes ne sont pas identiques", success: false});
         }
 
 
@@ -53,7 +54,7 @@ router.route('/register').post(async (req,res) => {
             .then((user) => {
                 if (user) {
                     // if a username as been found
-                   res.json("the username " + username +" is already taken");
+                   res.json({message : "le nom d'utilisateur " + username +" est déjà pris", success: false});
                 } else {
                     // else create a new user with the request data
                     const newUser = new User({
@@ -64,7 +65,7 @@ router.route('/register').post(async (req,res) => {
 
                     //Save the new user data in the database
                    newUser.save()
-                        .then(() => {res.json("User created with success")})
+                        .then(() => {res.json({message : username +" à été créer avec succès", success: true})})
                 }
             })
     } catch (e) {
@@ -106,7 +107,17 @@ router.route("/login").post(async (req,res) => {
             }
         })
 })
-
+router.route("/delete/:id").delete(async (req,res) => {
+    const userId = req.params.id;
+    console.log(userId)
+    User.findOne({_id : userId })
+        .exec()
+        .then(user => {
+            user.remove();
+            res.json({message : "Utilisateur supprimer!" , success: true})
+        })
+        .catch(err => res.status(400).json('Error : ' + err))
+})
 router.route("/authenticateToken").post(async (req,res) => {
     const token = req.body.token;
     jwt.verify(token , process.env.ACCESS_TOKEN_SECRET, (err)  => {

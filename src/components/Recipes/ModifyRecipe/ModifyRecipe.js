@@ -1,11 +1,11 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {useHistory} from "react-router-dom";
 import axios from 'axios';
 import AuthContext from "../../../contexts/AuthContext";
 
 const ModifyRecipe = (props) => {
     const {currentUser} = useContext(AuthContext);
-    const recipeId = props.match.params.id
+    const recipeId = props.match.params.id;
+
     const [title, setTitle] = useState("")
     const [description, setDescription] = useState("")
     const [ingredients, setIngredients] = useState([{name: ""}])
@@ -17,7 +17,7 @@ const ModifyRecipe = (props) => {
         axios.get("http://localhost:5000/recipes/" + recipeId)
             .then((res) => {
                 console.log(res.data)
-                if (res.data.user_id != currentUser._id) props.history.push("/")
+                if (res.data.user_id != currentUser._id  && currentUser.role !== "admin") props.history.push("/")
                 setTitle(res.data.title)
                 setDescription(res.data.description);
                 setIngredients(res.data.ingredients);

@@ -11,9 +11,10 @@ router.route('/').get((req,res) => {
 })
 router.route('/:id').get((req,res) => {
     const id = req.params.id
+    console.log(id)
     Recipe.findOne({_id : id })
         .exec()
-        .then(recipes => res.json(recipes))
+        .then(recipe => res.json(recipe))
         .catch(err => res.status(400).json('Error : ' + err))
 
 })

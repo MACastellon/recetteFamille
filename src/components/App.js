@@ -10,6 +10,8 @@ import {Container} from "react-bootstrap";
 import {AuthProvider,AuthConsumer} from "../contexts/AuthContext";
 import ModifyRecipe from "./Recipes/ModifyRecipe/ModifyRecipe";
 import Dashboard from "./Dashboard/Dashboard";
+import Recipe from "./Recipes/Recipe/Recipe";
+import RecipesBook from "./RecipesBook/RecipesBook";
 const App = () => {
 
 
@@ -18,24 +20,25 @@ const App = () => {
             <>
                 {context.currentUser != null ? (
                     <Container>
-                        {console.log("connecter")}
+
                         <Header/>
                         <Switch>
                             <Route path={'/recettes/modifier/:id'} component={ModifyRecipe}/>
-                            <Route path={'/recettes/ajouter'} component={CreateRecipe}/>
-                            <Route path={'/recettes'} component={Recipes}/>
-                            <Route path={'/tableau-de-bord'} component={Dashboard}/>
+                            <Route path={'/recettes/:id'} component={Recipe}/>
+                            <Route path={'/recettes'}  component={Recipes}/>
+                            <Route path={'/utilisateur/creer-recette'} component={CreateRecipe}/>
+                            <Route path={'/utilisateur/mes-recettes'} component={RecipesBook}/>
                             <Route path={'/accueil'} component={Home}/>
                             <Redirect to="/accueil"/>
                         </Switch>
                     </Container>
                 ) : (
                     <Container>
-                        {console.log("pas Co")}
                         <Header/>
                         <Switch>
+                            <Route path={'/recettes/:id'} component={Recipe}/>
                             <Route path={'/recettes'} component={Recipes}/>
-                            <Route path={'/connexion'} component={Login}/>
+                            <Route path={'/utilisateur/connexion'} component={Login}/>
                             <Route path={'/accueil'} component={Home}/>
                             <Redirect to="/accueil"/>
                         </Switch>
