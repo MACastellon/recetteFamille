@@ -1,3 +1,9 @@
+
+ul {
+    list-style: none;
+    padding: 0;
+}
+
 #overlay {
     position: fixed; /* Sit on top of the page content */
     display: none; /* Hidden by default */
@@ -13,4 +19,13 @@
 }
 .active {
     color: black;
+}
+.not-favourite {
+    color: gray;
+}
+.not-favourite:hover {
+    color: #fff075;
+}
+.favourite {
+    color: gold;
 }

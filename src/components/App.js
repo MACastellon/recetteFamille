@@ -12,6 +12,7 @@ import ModifyRecipe from "./Recipes/ModifyRecipe/ModifyRecipe";
 import Dashboard from "./Dashboard/Dashboard";
 import Recipe from "./Recipes/Recipe/Recipe";
 import RecipesBook from "./RecipesBook/RecipesBook";
+import CreateUser from "./Dashboard/CreateUser/CreateUser";
 const App = () => {
 
 
@@ -28,6 +29,12 @@ const App = () => {
                             <Route path={'/recettes'}  component={Recipes}/>
                             <Route path={'/utilisateur/creer-recette'} component={CreateRecipe}/>
                             <Route path={'/utilisateur/mes-recettes'} component={RecipesBook}/>
+                            {context.currentUser.role === "admin" || context.currentUser.role === "moderator" ? (
+                                <Route path={'/utilisateur/inscrire'} component={CreateUser}/>
+                            ) : (
+                                null
+                            )}
+                            <Route path={'/utilisateur/tableau-de-bord'} component={Dashboard}/>
                             <Route path={'/accueil'} component={Home}/>
                             <Redirect to="/accueil"/>
                         </Switch>

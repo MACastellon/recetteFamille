@@ -1,6 +1,7 @@
 const router = require('express').Router();
 
 let Recipe = require('../models/recipe.model');
+let User = require('../models/user.model');
 
 router.route('/').get((req,res) => {
     Recipe.find()
@@ -65,6 +66,8 @@ router.route('/add').post(async (req,res) => {
 
     //Saving the new recipe in the database
     await  newRecipe.save()
+
+    await  User.updateOne({_id : user_id}, {$push :{'recipes' : newRecipe._id}})
 
     await res.json({message: "La recette à été ajouter", success: true})
 })

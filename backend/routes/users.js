@@ -11,9 +11,9 @@ router.route("/").get((req,res) => {
         .catch(err => res.status(400).json('Error : ' + err))
 })
 
+
 router.route("/:id/recipes").get((req,res) =>  {
     const userId = req.params.id
-
     if(!userId) res.json("Bad Request")
     Recipe.find({user_id : userId})
         .then(recipes =>  {
@@ -25,19 +25,45 @@ router.route("/:id/recipes").get((req,res) =>  {
 
 
 })
+router.route("/favourites/add").patch((req,res) => {
+        const recipeId = req.body.recipeId;
+        const userId = req.body.userId;
+        Recipe.findOne({_id : recipeId})
+            .then (recipe => {
+                User.updateOne({_id : userId}, {$push :{"favourites" : recipe._id}})
+                    .then(resp  => {
+                        console.log(resp)
+                    })
+                res.json({message : "Recette ajouté à vos favoris", success: true})
+            })
+})
+
+router.route("/favourites/remove").patch((req,res) => {
+    const recipeId = req.body.recipeId;
+    const userId = req.body.userId;
+    Recipe.findOne({_id : recipeId})
+        .then (recipe => {
+            User.updateOne({_id : userId}, {$pop :{"favourites" : recipe._id}})
+                .then(resp  => {
+                    console.log(resp)
+                })
+            res.json({message : "Recette retirer de vos favoris", success: true})
+        })
+})
 router.route('/register').post(async (req,res) => {
     try {
-
+        const firstName = req.body.firstName;
+        const lastName = req.body.lastName;
         const username = req.body.username;
         const password =   req.body.password;
         const password2 = req.body.password2;
         const role = req.body.role;
-        console.log(username)
+        console.log(firstName)
 
         let errors = [];
 
         //Verification before the registration
-        if (!username || !password || !password2 || !role) {
+        if (!username || !password || !password2 || !role || !firstName || !lastName) {
             res.json({message : "Tout les champs doivent être remplis", success: false})
         }
 
@@ -58,9 +84,13 @@ router.route('/register').post(async (req,res) => {
                 } else {
                     // else create a new user with the request data
                     const newUser = new User({
+                        firstName : firstName,
+                        lastName: lastName,
                         username : username,
                         password : hashedPassword,
-                        role : role
+                        role : role,
+                        recipes: [],
+                        favourites: []
                     })
 
                     //Save the new user data in the database
@@ -85,7 +115,7 @@ router.route("/login").post(async (req,res) => {
 
     await User.findOne({username : username})
         .then( async (user) => {
-
+            console.log(user.firstName);
             if (!user) res.json({message : "Ce compte n'est pas inscrit"})
 
             //Compare password
@@ -95,7 +125,9 @@ router.route("/login").post(async (req,res) => {
                 // Make object of user data without the password
                 const userData = {
                     _id: user._id,
-                    username : user.username,
+                    firstName : encodeURI(user.firstName),
+                    lastName : encodeURI(user.lastName),
+                    username : encodeURI(user.username),
                     role: user.role
                 }
 
@@ -109,11 +141,22 @@ router.route("/login").post(async (req,res) => {
 })
 router.route("/delete/:id").delete(async (req,res) => {
     const userId = req.params.id;
+    const userRole = req.body.role;
+    let userRecipes = [];
     console.log(userId)
+    if (userRole !== "admin") res.json({message: "Vous n'avez pas l'autorisation", success : false})
+
+
     User.findOne({_id : userId })
         .exec()
         .then(user => {
             user.remove();
+            for (let i = 0; i < user.recipes.length; i++) {
+                Recipe.findOne({_id : user.recipes[i]})
+                    .then (recipe => {
+                        recipe.remove();
+                    } )
+            }
             res.json({message : "Utilisateur supprimer!" , success: true})
         })
         .catch(err => res.status(400).json('Error : ' + err))

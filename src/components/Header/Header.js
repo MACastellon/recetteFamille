@@ -8,7 +8,7 @@ function Header() {
     return (
         <>
             <Navbar bg="light" expand="lg">
-                <Navbar.Brand href="#home">React-Bootstrap</Navbar.Brand>
+                <Navbar.Brand href="#home">La Familia</Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="mr-auto">
@@ -19,6 +19,13 @@ function Header() {
                                 <NavDropdown title="Options" id="basic-nav-dropdown">
                                     <NavDropdown.Item as={NavLink} to="/utilisateur/creer-recette">Créer une recette</NavDropdown.Item>
                                     <NavDropdown.Item as={NavLink} to="/utilisateur/mes-recettes">Mes Recettes</NavDropdown.Item>
+
+                                    {currentUser.role === "admin" || currentUser.role === "moderator"? (
+                                        <>
+                                            <NavDropdown.Divider />
+                                            <NavDropdown.Item as={NavLink} to="/utilisateur/tableau-de-bord">Tableau de bord</NavDropdown.Item>
+                                        </>
+                                    ) : (null)}
                                     <NavDropdown.Divider />
                                     <NavDropdown.Item onClick={logoutFn}>Se Déconnecter</NavDropdown.Item>
                                 </NavDropdown>
