@@ -19,6 +19,7 @@ function Header() {
                                 <NavDropdown title="Options" id="basic-nav-dropdown">
                                     <NavDropdown.Item as={NavLink} to="/utilisateur/creer-recette">Créer une recette</NavDropdown.Item>
                                     <NavDropdown.Item as={NavLink} to="/utilisateur/mes-recettes">Mes Recettes</NavDropdown.Item>
+                                    <NavDropdown.Item as={NavLink} to="/utilisateur/mes-favoris">Mes Favoris</NavDropdown.Item>
 
                                     {currentUser.role === "admin" || currentUser.role === "moderator"? (
                                         <>

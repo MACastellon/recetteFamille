@@ -4,6 +4,8 @@ const  jwt = require("jsonwebtoken");
 
 let User = require('../models/user.model');
 let Recipe = require('../models/recipe.model');
+let Favourite = require('../models/favourite.model');
+
 
 router.route("/").get((req,res) => {
     User.find()
@@ -25,29 +27,53 @@ router.route("/:id/recipes").get((req,res) =>  {
 
 
 })
-router.route("/favourites/add").patch((req,res) => {
+router.route("/:user_id/favourites/:recipe_id").get((req,res) => {
+    const userId = req.params.user_id;
+    const recipeId = req.params.recipe_id;
+
+    Favourite.findOne({ recipe_id : recipeId, user_id : userId})
+        .then(favourite => {
+
+            if (favourite !== null) {
+                res.json(favourite);
+            } else {
+                res.json(false)
+            }
+        } )
+} )
+router.route("/:id/favourites").get((req,res) => {
+    const userId = req.params.id;
+    Favourite.find({user_id: userId})
+        .then(favorites => {
+            res.json(favorites);
+        } )
+} )
+router.route("/favourites/add").post((req,res) => {
         const recipeId = req.body.recipeId;
         const userId = req.body.userId;
         Recipe.findOne({_id : recipeId})
             .then (recipe => {
-                User.updateOne({_id : userId}, {$push :{"favourites" : recipe._id}})
-                    .then(resp  => {
-                        console.log(resp)
-                    })
+                const newFavourite = new Favourite({
+                    title: recipe.title,
+                    recipe_id : recipe._id,
+                    user_id : userId
+                })
+                newFavourite.save();
                 res.json({message : "Recette ajouté à vos favoris", success: true})
             })
 })
 
-router.route("/favourites/remove").patch((req,res) => {
+router.route("/favourites/remove").delete((req,res) => {
     const recipeId = req.body.recipeId;
     const userId = req.body.userId;
-    Recipe.findOne({_id : recipeId})
-        .then (recipe => {
-            User.updateOne({_id : userId}, {$pop :{"favourites" : recipe._id}})
-                .then(resp  => {
-                    console.log(resp)
-                })
-            res.json({message : "Recette retirer de vos favoris", success: true})
+    Favourite.findOne({recipe_id : recipeId , user_id : userId})
+        .then (favourite => {
+            if (favourite  !== null ) {
+                favourite.remove();
+                res.json(false)
+            } else {
+                res.json(true);
+            }
         })
 })
 router.route('/register').post(async (req,res) => {
@@ -88,9 +114,7 @@ router.route('/register').post(async (req,res) => {
                         lastName: lastName,
                         username : username,
                         password : hashedPassword,
-                        role : role,
-                        recipes: [],
-                        favourites: []
+                        role : role
                     })
 
                     //Save the new user data in the database
@@ -146,17 +170,19 @@ router.route("/delete/:id").delete(async (req,res) => {
     console.log(userId)
     if (userRole !== "admin") res.json({message: "Vous n'avez pas l'autorisation", success : false})
 
-
     User.findOne({_id : userId })
         .exec()
         .then(user => {
             user.remove();
-            for (let i = 0; i < user.recipes.length; i++) {
-                Recipe.findOne({_id : user.recipes[i]})
-                    .then (recipe => {
-                        recipe.remove();
-                    } )
-            }
+            Recipe.find ({user_id: userId})
+                .then(recipes => {
+                    for (let i = 0; i < recipes.length; i++) {
+                        Recipe.findOne({_id : recipes[i]._id})
+                            .then (recipe => {
+                                recipe.remove();
+                            } )
+                    }
+                })
             res.json({message : "Utilisateur supprimer!" , success: true})
         })
         .catch(err => res.status(400).json('Error : ' + err))

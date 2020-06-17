@@ -4,10 +4,20 @@ let Recipe = require('../models/recipe.model');
 let User = require('../models/user.model');
 
 router.route('/').get((req,res) => {
-    Recipe.find()
-        .exec()
-        .then(recipes => res.json(recipes))
-        .catch(err => res.status(400).json('Error : ' + err))
+    const query = req.query.q;
+    console.log(query)
+    if (query != "") {
+        Recipe.find( { title: query })
+            .exec()
+            .then(recipes => res.json(recipes))
+            .catch(err => res.status(400).json('Error : ' + err))
+    } else {
+        Recipe.find()
+            .exec()
+            .then(recipes => res.json(recipes))
+            .catch(err => res.status(400).json('Error : ' + err))
+    }
+
 
 })
 router.route('/:id').get((req,res) => {

@@ -13,6 +13,7 @@ import Dashboard from "./Dashboard/Dashboard";
 import Recipe from "./Recipes/Recipe/Recipe";
 import RecipesBook from "./RecipesBook/RecipesBook";
 import CreateUser from "./Dashboard/CreateUser/CreateUser";
+import Favourites from "./Favourites/Favourites";
 const App = () => {
 
 
@@ -29,6 +30,7 @@ const App = () => {
                             <Route path={'/recettes'}  component={Recipes}/>
                             <Route path={'/utilisateur/creer-recette'} component={CreateRecipe}/>
                             <Route path={'/utilisateur/mes-recettes'} component={RecipesBook}/>
+                            <Route path={'/utilisateur/mes-favoris'} component={Favourites}/>
                             {context.currentUser.role === "admin" || context.currentUser.role === "moderator" ? (
                                 <Route path={'/utilisateur/inscrire'} component={CreateUser}/>
                             ) : (

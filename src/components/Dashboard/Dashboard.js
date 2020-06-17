@@ -2,9 +2,9 @@ import React, {useContext, useEffect, useState} from "react";
 import AuthContext from "../../contexts/AuthContext";
 import axios from "axios";
 import {Link} from "react-router-dom";
-import {Tab, Tabs, Button, Dropdown} from "react-bootstrap";
+import {Dropdown} from "react-bootstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faUser, faCog, faStar} from "@fortawesome/free-solid-svg-icons";
+import {faUser, faCog} from "@fortawesome/free-solid-svg-icons";
 
 const Dashboard = () => {
     const {currentUser} = useContext(AuthContext);
@@ -47,7 +47,7 @@ const Dashboard = () => {
                     users.map((user, i) => {
                         return (
                             <li key={i}>
-                                <FontAwesomeIcon icon={faUser} /> {user.username}
+                                <FontAwesomeIcon icon={faUser} /> {user.firstName} {user.lastName}
                                 <Link to={"/utilisateur/:id/recettes"}>Voir recettes</Link>
                                 {currentUser.role === "admin"? (
                                     currentUser.role ===  user.role  ? (

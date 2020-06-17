@@ -1,44 +1,73 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {Link} from "react-router-dom";
 import axios from "axios";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faStar as Star} from "@fortawesome/free-solid-svg-icons";
+import {faHeart as Heart} from "@fortawesome/free-solid-svg-icons";
+import AuthContext from "../../../contexts/AuthContext";
 
 const Recipe = (props) => {
 
     const recipeId =  props.match.params.id;
     const [recipe, setRecipe] = useState(null);
     const [favourite, setFavourite] = useState(false)
+    const {currentUser} = useContext(AuthContext)
+    const [loading, setLoading] = useState(true)
 
+
+    useEffect(() => {
+        if (currentUser === null) return
+        axios.get("http://localhost:5000/users/" + currentUser._id + "/favourites/" + recipeId )
+            .then((res)  => {
+                setFavourite(res.data)
+            })
+    },[])
 
     useEffect( () => {
         if (recipe != null) return
         axios.get("http://localhost:5000/recipes/" + recipeId)
             .then((res)  => {
-                console.log(res.data)
                 setRecipe(res.data)
             })
+        setLoading(false)
     },[favourite])
 
     const addFavourites = () => {
         console.log("added")
-        setFavourite(true)
+
+        const data = {
+            recipeId : recipeId,
+            userId : currentUser._id
+        }
+        axios.post("http://localhost:5000/users/favourites/add", data)
+            .then((res) => {
+                setFavourite(res.data)
+            })
     }
     const removeFavourites = () => {
-        setFavourite(false)
+        const data = {
+            recipeId : recipeId,
+            userId : currentUser._id
+        }
+        axios.delete("http://localhost:5000/users/favourites/remove", {data})
+            .then((res) => {
+                setFavourite(res.data)
+            })
         console.log("removed")
     }
     return (
         <>
-            {recipe != null ? (
+            {recipe != null  && !loading ? (
                 <>
                     {favourite ? (
-                        <Link  className={"favourite"} onClick={removeFavourites}><FontAwesomeIcon icon={Star}/></Link>
+                        <Link to={"#"} className={"favourite"} onClick={removeFavourites}><FontAwesomeIcon icon={Heart}/></Link>
                     ) : (
-                        <Link  className={"not-favourite"} onClick={addFavourites}><FontAwesomeIcon icon={Star}/></Link>
-                    )}
+                        currentUser != null ? (
+                            <Link className={"not-favourite"}  onClick={addFavourites}><FontAwesomeIcon icon={Heart}/></Link>
+                        ) : (
+                            <Link to={"/utilisateur/connexion"} className={"not-favourite"}><FontAwesomeIcon icon={Heart}/></Link>
+                        )
 
-
+                        )}
                     <h2>{recipe.title}</h2>
                     <h3>Description</h3>
                     <p>{recipe.description}</p>

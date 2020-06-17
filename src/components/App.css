@@ -24,8 +24,23 @@ ul {
     color: gray;
 }
 .not-favourite:hover {
-    color: #fff075;
+    color: gray;
 }
 .favourite {
-    color: gold;
+    color: #ff4736;
+}
+.favourite:hover {
+    color: #ff4736;
+}
+.filter-menu {
+    transition: height 10000ms ease-in-out;
+}
+.filter-closed {
+    height: 0;
+    display: none;
+
+}
+.filter-open {
+    display: block;
+    height: auto;
 }
