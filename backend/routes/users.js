@@ -12,7 +12,18 @@ router.route("/").get((req,res) => {
         .then(users => res.json(users))
         .catch(err => res.status(400).json('Error : ' + err))
 })
-
+router.route("/:id").get((req,res) => {
+    const userId = req.params.id;
+    User.findOne({_id : userId})
+        .then(user => {
+            const data = {
+                firstName: user.firstName,
+                lastName : user.lastName
+            }
+            res.json(data);
+        })
+        .catch(err => res.status(400).json('Error : ' + err))
+})
 
 router.route("/:id/recipes").get((req,res) =>  {
     const userId = req.params.id

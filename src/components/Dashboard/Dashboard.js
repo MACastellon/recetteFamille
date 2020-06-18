@@ -48,7 +48,7 @@ const Dashboard = () => {
                         return (
                             <li key={i}>
                                 <FontAwesomeIcon icon={faUser} /> {user.firstName} {user.lastName}
-                                <Link to={"/utilisateur/:id/recettes"}>Voir recettes</Link>
+                                <Link to={{pathname : "/utilisateur/"+ user._id +"/recettes" , state : { username :user.firstName + " "+ user.lastName }}}>Voir recettes</Link>
                                 {currentUser.role === "admin"? (
                                     currentUser.role ===  user.role  ? (
                                         null

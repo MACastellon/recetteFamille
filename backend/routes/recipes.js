@@ -5,7 +5,6 @@ let User = require('../models/user.model');
 
 router.route('/').get((req,res) => {
     const query = req.query.q;
-    console.log(query)
     if (query != "") {
         Recipe.find( { title: query })
             .exec()
@@ -17,8 +16,6 @@ router.route('/').get((req,res) => {
             .then(recipes => res.json(recipes))
             .catch(err => res.status(400).json('Error : ' + err))
     }
-
-
 })
 router.route('/:id').get((req,res) => {
     const id = req.params.id
