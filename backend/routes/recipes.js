@@ -2,11 +2,11 @@ const router = require('express').Router();
 
 let Recipe = require('../models/recipe.model');
 let User = require('../models/user.model');
-
+let Favourite = require('../models/favourite.model');
 router.route('/').get((req,res) => {
     const query = req.query.q;
     if (query != "") {
-        Recipe.find( { title: query })
+        Recipe.find({title: {$regex: query.toUpperCase(), $options : "i"}})
             .exec()
             .then(recipes => res.json(recipes))
             .catch(err => res.status(400).json('Error : ' + err))
@@ -19,7 +19,6 @@ router.route('/').get((req,res) => {
 })
 router.route('/:id').get((req,res) => {
     const id = req.params.id
-    console.log(id)
     Recipe.findOne({_id : id })
         .exec()
         .then(recipe => res.json(recipe))
@@ -63,7 +62,7 @@ router.route('/add').post(async (req,res) => {
 
     //Creating the new recipe object
     const newRecipe = new Recipe({
-        title,
+        title: title.toUpperCase(),
         description,
         image,
         ingredients : ingredients,
@@ -117,7 +116,7 @@ router.route('/update').patch((req, res) => {
     console.log(title, description,user_id,ingredients,steps)
 
     Recipe.updateOne({_id : recipeId}, {$set : {
-            title : title,
+            title : title.toUpperCase(),
             description : description,
             ingredients : ingredients,
             steps : steps
@@ -137,7 +136,20 @@ router.route('/update').patch((req, res) => {
         .exec()
         .then(recipe => {
             recipe.remove();
-            res.json({message : "Recette supprimer!"})
+            Favourite.find({recipe_id : id})
+                .then(favourites => {
+                    if (favourites.length > 0) {
+                        for (let i = 0; i <= favourites.length; i++) {
+                            favourites[i].remove();
+                        }
+                        res.json({message : "Recette supprimer!"})
+                    } else {
+                        res.json({message : "Recette supprimer!"})
+                    }
+
+
+                })
+
         })
         .catch(err => res.status(400).json('Error : ' + err))
 

@@ -38,7 +38,7 @@ const App = () => {
                                 null
                             )}
                             {context.currentUser.role === "admin" || context.currentUser.role === "moderator" ? (
-                                <Route path={'/utilisateur/:id/recettes'} component={UserRecipes}/>
+                                <Route path={'/utilisateur/:id/liste-de-recettes'} component={UserRecipes}/>
                             ) : (
                                 null
                             )}

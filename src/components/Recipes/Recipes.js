@@ -4,7 +4,7 @@ import axios from 'axios';
 
 const Recipes = () => {
     const [recipes, setRecipes] = useState(null);
-    const [filterMenu, setFilterMenu] = useState(false);
+    const [loading, setLoading] = useState(true)
 
     const [search, setSearch] = useState("");
     useEffect(() => {
@@ -13,6 +13,7 @@ const Recipes = () => {
             .then((res) => {
                 console.log(res.data)
                 setRecipes(res.data);
+                setLoading(false);
             })
     },[search])
 
@@ -25,16 +26,23 @@ const Recipes = () => {
                     setSearch(e.target.value)
                 }
             }}/>
-            {recipes != null ? (
-                <ul>
-                    {recipes.map((recipe, i) => {
-                        return (
-                            <li key={i}>
-                                <h3><Link to={"/recettes/" + recipe._id}>{recipe.title}</Link></h3>
-                            </li>
-                        )
-                    })}
-                </ul>
+            {!loading ? (
+                <>
+                    {recipes.length >  0 ? (
+                        <ul>
+                            {recipes.map((recipe, i) => {
+                                return (
+                                    <li key={i}>
+                                        <h3><Link to={"/recettes/" + recipe._id}>{recipe.title}</Link></h3>
+                                    </li>
+                                )
+                            })}
+                        </ul>
+                    ) : (
+                        <div>Aucune recette trouvé</div>
+                    )}
+                </>
+
             ) : (
                 null
             )}
