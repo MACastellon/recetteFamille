@@ -26,7 +26,7 @@ ul {
     align-items: center;
 }
 .recipe-type a {
-    border: #ff4736 solid 1px;
+    border:  #00ffb2 solid 1px;
     border-radius: 90px;
     padding: 0.2em 2em 0.2em 0;
     color: black;
@@ -36,9 +36,9 @@ ul {
 .recipe-type a:hover {
     text-decoration: none;
     color: white;
-    background-color: #ff4736;
+    background-color: #00ffb2;
 }
 .filter-active {
-    background-color: #ff4736;
+    background-color: #00ffb2;
     color: white;
 }
