@@ -22,6 +22,26 @@ const RecipeSchema = new Schema({
     },
     ingredients: [],
     steps: [],
+    category : {
+        type : String,
+        required : true
+    },
+    preparation : {
+        type : Number,
+        required : false
+    },
+    cooking : {
+        type : Number,
+        required : false
+    },
+    portion : {
+        type : Number,
+        required : false
+    },
+    date : {
+        type : Date,
+        required : true
+    },
 
     user_id: { type:String , require: true}
 });

@@ -5,16 +5,31 @@ let User = require('../models/user.model');
 let Favourite = require('../models/favourite.model');
 router.route('/').get((req,res) => {
     const query = req.query.q;
+    const filter = req.query.f;
     if (query != "") {
-        Recipe.find({title: {$regex: query.toUpperCase(), $options : "i"}})
-            .exec()
-            .then(recipes => res.json(recipes))
-            .catch(err => res.status(400).json('Error : ' + err))
+        if (filter != "") {
+            Recipe.find({category : filter,title: {$regex: query.toUpperCase(), $options : "i"}})
+                .exec()
+                .then(recipes => res.json(recipes))
+                .catch(err => res.status(400).json('Error : ' + err))
+        } else {
+            Recipe.find({title: {$regex: query.toUpperCase(), $options : "i"}})
+                .exec()
+                .then(recipes => res.json(recipes))
+                .catch(err => res.status(400).json('Error : ' + err))
+        }
     } else {
-        Recipe.find()
-            .exec()
-            .then(recipes => res.json(recipes))
-            .catch(err => res.status(400).json('Error : ' + err))
+        if (filter != "") {
+            Recipe.find({category : filter})
+                .exec()
+                .then(recipes => res.json(recipes))
+                .catch(err => res.status(400).json('Error : ' + err))
+        } else {
+            Recipe.find()
+                .exec()
+                .then(recipes => res.json(recipes))
+                .catch(err => res.status(400).json('Error : ' + err))
+        }
     }
 })
 router.route('/:id').get((req,res) => {
@@ -35,6 +50,7 @@ router.route('/add').post(async (req,res) => {
     const user_id = req.body.user_id;
     const ingredients = req.body.ingredients;
     const steps = req.body.steps;
+    const category = req.body.category;
 
     // errors arrays
     let err = [];
@@ -66,7 +82,9 @@ router.route('/add').post(async (req,res) => {
         description,
         image,
         ingredients : ingredients,
-        steps: steps ,
+        steps: steps,
+        category : category,
+        date : Date.now(),
         user_id
     });
 
@@ -86,6 +104,7 @@ router.route('/update').patch((req, res) => {
     const user_id = req.body.user_id;
     const ingredients = req.body.ingredients;
     const steps = req.body.steps;
+    const category = req.body.category;
 
 
     // errors arrays
@@ -115,18 +134,18 @@ router.route('/update').patch((req, res) => {
 
     console.log(title, description,user_id,ingredients,steps)
 
-    Recipe.updateOne({_id : recipeId}, {$set : {
+
+   Recipe.updateOne({_id : recipeId}, {$set : {
             title : title.toUpperCase(),
             description : description,
             ingredients : ingredients,
-            steps : steps
+            steps : steps,
+            category : category
         },
     })
-        .then((recipe) => {
-            console.log(recipe)
-        })
-    res.json({message : "La recette à été modifier avec succès", success: true})
-
+       .then(() => {
+           res.json({message : "La recette à été modifier avec succès", success: true})
+       })
 
 })
  router.route('/delete/:id').delete((req,res) => {
@@ -137,22 +156,18 @@ router.route('/update').patch((req, res) => {
         .then(recipe => {
             recipe.remove();
             Favourite.find({recipe_id : id})
-                .then(favourites => {
+                .then( favourites => {
                     if (favourites.length > 0) {
-                        for (let i = 0; i <= favourites.length; i++) {
-                            favourites[i].remove();
+                        for (let i = 0; i < favourites.length; i++) {
+                             favourites[i].remove();
                         }
-                        res.json({message : "Recette supprimer!"})
+                         res.json({message : "Recette supprimer!"})
                     } else {
-                        res.json({message : "Recette supprimer!"})
+                         res.json({message : "Recette supprimer!"})
                     }
-
-
                 })
-
         })
         .catch(err => res.status(400).json('Error : ' + err))
-
 })
 
 module.exports = router;

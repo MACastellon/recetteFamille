@@ -11,6 +11,7 @@ const CreateRecipe = (props) => {
     const [description, setDescription] = useState("")
     const [ingredients, setIngredients] = useState([{name: ""}])
     const [steps, setSteps] = useState([{step: ""}])
+    const [category, setCategory] = useState("main")
     const [userId, setUserId] = useState("")
 
     const [err, setErr] = useState([])
@@ -42,6 +43,7 @@ const CreateRecipe = (props) => {
             description : description,
             ingredients : ingredients,
             steps : steps,
+            category : category,
             user_id : userId
         }
 
@@ -56,7 +58,7 @@ const CreateRecipe = (props) => {
 
     return (
         <>
-            <h1>Créer une recette</h1>
+            <h2>Créer une recette</h2>
             <div>
                 {err.length !== 0 ?(
                     <>
@@ -83,6 +85,15 @@ const CreateRecipe = (props) => {
                 <div>
                     <h2>Titre de la recette</h2>
                     <input type="text" onChange={(e) => { e.preventDefault(); setTitle(e.target.value)} }/>
+                </div>
+                <div>
+                    <h2>Type de recettes</h2>
+                    <select name="category" id="" value={category} onChange={(e) => {e.persist(); setCategory(e.target.value)}}>
+                        <option value="main">Plat Principal</option>
+                        <option value="appetizers">Entrée</option>
+                        <option value="dessert">Dessert</option>
+                        <option value="drink">Boisson</option>
+                    </select>
                 </div>
                 <div>
                     <h2>Description</h2>

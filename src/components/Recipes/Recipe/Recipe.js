@@ -69,7 +69,6 @@ const Recipe = (props) => {
 
                         )}
                     <h2>{recipe.title}</h2>
-                    <h3>Description</h3>
                     <p>{recipe.description}</p>
                     <h3>Ingrédients</h3>
                     <ul>

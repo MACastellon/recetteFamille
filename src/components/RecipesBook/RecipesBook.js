@@ -13,7 +13,7 @@ const RecipesBook = ()  => {
                 setUserRecipes(res.data);
                 console.log(res.data)
             })
-    },[userRecipes])
+    },[])
     const deleteRecipe = (e, id, index) => {
         e.preventDefault();
         axios.delete("http://localhost:5000/recipes/delete/"+ id)

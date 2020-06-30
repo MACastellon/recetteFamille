@@ -5,27 +5,34 @@ import axios from 'axios';
 const Recipes = () => {
     const [recipes, setRecipes] = useState(null);
     const [loading, setLoading] = useState(true)
-
     const [search, setSearch] = useState("");
+    const [filter, setFilter] = useState("");
     useEffect(() => {
 
-        axios.get("http://localhost:5000/recipes?q=" + search)
+        axios.get("http://localhost:5000/recipes?q=" + search + "&f="+ filter)
             .then((res) => {
                 console.log(res.data)
                 setRecipes(res.data);
                 setLoading(false);
             })
-    },[search])
+    },[search,filter])
 
 
     return (
         <>
-            <h1>Recettes Route</h1>
+            <h2>Recettes</h2>
             <input type="text" placeholder={"Recherche un recette"} onKeyDown={(e)  =>  {
                 if(e.key === "Enter") {
                     setSearch(e.target.value)
                 }
             }}/>
+            <div className={"recipe-type"}>
+                <Link className={filter === "" ? ("filter-active") : ("")} onClick={() => setFilter("")}>Tout</Link>
+                <Link className={filter === "main" ? ("filter-active") : ("")} onClick={() => setFilter("main")}>Plat Principal</Link>
+                <Link className={filter === "appetizers" ? ("filter-active") : ("")} onClick={() => setFilter("appetizers")}>Entrée</Link>
+                <Link className={filter === "dessert" ? ("filter-active") : ("")} onClick={() => setFilter("dessert")}>Dessert</Link>
+                <Link className={filter === "drink" ? ("filter-active") : ("")} onClick={() => setFilter("drink")}>Boisson</Link>
+            </div>
             {!loading ? (
                 <>
                     {recipes.length >  0 ? (
