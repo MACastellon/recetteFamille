@@ -8,6 +8,7 @@ const CreateRecipe = (props) => {
     const {currentUser} = useContext(AuthContext)
 
     const [title, setTitle] = useState("")
+    const [image, setImage] = useState(null)
     const [description, setDescription] = useState("")
     const [ingredients, setIngredients] = useState([{name: ""}])
     const [steps, setSteps] = useState([{step: ""}])
@@ -37,9 +38,20 @@ const CreateRecipe = (props) => {
 
     const submit = (e) => {
         e.preventDefault();
+        let formData = new FormData();
+        formData.append('title' , title)
+        formData.append('image' , image)
+        formData.append('description' , description)
+        formData.append('ingredients[]' , JSON.stringify(ingredients))
+        formData.append('steps[]' , JSON.stringify(steps))
+        formData.append('category' , category)
+        formData.append('user_id' , userId)
+
+        console.log(formData.values())
         setErr([])
         const data = {
             title : title,
+            image : image,
             description : description,
             ingredients : ingredients,
             steps : steps,
@@ -47,8 +59,15 @@ const CreateRecipe = (props) => {
             user_id : userId
         }
 
+        axios({
+            method : 'POST',
+            url : "http://localhost:5000/recipes/add",
+            headers : {
+                "Content-Type" : "multipart/form-data"
+            },
+            data : formData,
 
-        axios.post("http://localhost:5000/recipes/add", data)
+        })
             .then(res => {
                 if (res.data.err) setErr(res.data.err);
                 if(res.data.success) props.history.push("/recettes");
@@ -82,9 +101,13 @@ const CreateRecipe = (props) => {
 
             </div>
             <form action="POST" onSubmit={(e) => submit(e)}>
+                {console.log(image)}
                 <div>
                     <h2>Titre de la recette</h2>
                     <input type="text" onChange={(e) => { e.preventDefault(); setTitle(e.target.value)} }/>
+                </div>
+                <div>
+                    <input type="file" onChange={(e) => {e.preventDefault(); setImage(e.target.files[0])}} name={"image"}/>
                 </div>
                 <div>
                     <h2>Type de recettes</h2>

@@ -69,6 +69,7 @@ const Recipe = (props) => {
 
                         )}
                     <h2>{recipe.title}</h2>
+                    <img src={recipe.image} alt=""/>
                     <p>{recipe.description}</p>
                     <h3>Ingrédients</h3>
                     <ul>

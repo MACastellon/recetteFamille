@@ -1,8 +1,27 @@
 const router = require('express').Router();
+const path = require("path");
+const {format} = require('util')
+const {Storage} = require('@google-cloud/storage');
+const Multer = require('multer');
 
 let Recipe = require('../models/recipe.model');
 let User = require('../models/user.model');
 let Favourite = require('../models/favourite.model');
+
+const multer = Multer({
+    storage : Multer.memoryStorage(),
+    limits : {
+        fileSize : 5 * 1024 * 1024
+    }
+})
+const gc = new Storage({
+    keyFilename : path.join(__dirname, '../la-familia-281914-e99f1a6fd73e.json'),
+    projectId : 'la-familia-281914'
+});
+
+const bucket = gc.bucket('la-familia');
+
+
 router.route('/').get((req,res) => {
     const query = req.query.q;
     const filter = req.query.f;
@@ -41,16 +60,25 @@ router.route('/:id').get((req,res) => {
 
 })
 
-router.route('/add').post(async (req,res) => {
+router.route('/add').post( multer.single("image") , async (req,res) => {
 
     // Gather all the information sent by the post method
     const title = req.body.title;
     const description = req.body.description;
-    const image = req.body.image;
+    let image;
     const user_id = req.body.user_id;
-    const ingredients = req.body.ingredients;
-    const steps = req.body.steps;
+    const ingredients = JSON.parse(req.body.ingredients);
+    const steps = JSON.parse(req.body.steps);
     const category = req.body.category;
+    console.log(title , category)
+    const blob = bucket.file(req.file.originalname);
+    const blobStream = blob.createWriteStream();
+
+    blobStream.on('error', (err) => {
+       err.push({message : "L'image n'as pas peut être uploader"})
+    });
+
+    blobStream.end(req.file.buffer);
 
     // errors arrays
     let err = [];
@@ -80,7 +108,9 @@ router.route('/add').post(async (req,res) => {
     const newRecipe = new Recipe({
         title: title.toUpperCase(),
         description,
-        image,
+        image :  format(
+            `https://storage.googleapis.com/${bucket.name}/${blob.name}`
+        ),
         ingredients : ingredients,
         steps: steps,
         category : category,

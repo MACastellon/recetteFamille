@@ -1,6 +1,9 @@
 const express = require('express');
 const cors = require("cors");
 const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
+const {Storage} = require('@google-cloud/storage');
+const path = require('path');
 
 
 require('dotenv').config();
@@ -10,6 +13,8 @@ const port = process.env.PORT || 5000;
 
 app.use(cors());
 app.use(express.json());
+app.use(bodyParser.json())
+
 
 
 const uri= process.env.ATLAS_URI;
@@ -27,5 +32,5 @@ app.use('/users', userRouter);
 
 
 app.listen(port , () => {
-    console.log("server is running");
+    console.log("server is running")
 })
